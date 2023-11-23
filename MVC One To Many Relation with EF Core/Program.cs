@@ -6,12 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(opt => {
-    opt.UseSqlServer("Server=MSI;Database=MVCB-B206-Sliders;Trusted_Connection=True");
+    opt.UseSqlServer("Server=DESKTOP-0HH3DC0\\SQLEXPRESS;Database=ALLUP-SLIDER;Trusted_Connection=True");
 
 });
 
 
 var app = builder.Build();
+
+app.MapControllerRoute(
+            name: "areas",
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+          );
 
 app.MapControllerRoute(
     name: "default",
