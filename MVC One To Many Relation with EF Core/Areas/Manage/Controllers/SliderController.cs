@@ -52,7 +52,7 @@ namespace Pustok.Areas.Manage.Controllers
 
                 fileName = Guid.NewGuid().ToString() + fileName;
 
-                string path = "C:\\Users\\II Novbe\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + fileName;
+                string path = "C:\\Users\\Mehemmed\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + fileName;
                 using (FileStream fileStream = new FileStream(path, FileMode.Create))
                 {
                     slider.IFormFile.CopyTo(fileStream);
@@ -91,7 +91,7 @@ namespace Pustok.Areas.Manage.Controllers
                 return NotFound();
             }
 
-            string oldFilePath = "C:\\Users\\II Novbe\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + wanted.Image;
+            string oldFilePath = "C:\\Users\\Mehemmed\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + wanted.Image;
 
             if (slider.IFormFile != null)
             {
@@ -99,12 +99,15 @@ namespace Pustok.Areas.Manage.Controllers
                 string newFileName = slider.IFormFile.FileName;
                 if (slider.IFormFile.ContentType != "image/jpeg" && slider.IFormFile.ContentType != "image/png")
                 {
-                    ModelState.AddModelError("FormFile", "you can only add png or jpeg file");
+                    ModelState.AddModelError("IFormFile", "you can only add png or jpeg file");
+                    return View() ;
                 }
 
                 if (slider.IFormFile.Length > 1048576)
                 {
-                    ModelState.AddModelError("FormFile", "file must be lower than 1 mb");
+                    ModelState.AddModelError("IFormFile", "file must be lower than 1 mb");
+                    return View();
+
                 }
 
                 if (slider.IFormFile.FileName.Length > 64)
@@ -114,7 +117,7 @@ namespace Pustok.Areas.Manage.Controllers
 
                 newFileName = Guid.NewGuid().ToString() + newFileName;
 
-                string newFilePath = "C:\\Users\\II Novbe\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + newFileName;
+                string newFilePath = "C:\\Users\\Mehemmed\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + newFileName;
                 using (FileStream fileStream = new FileStream(newFilePath, FileMode.Create))
                 {
                     slider.IFormFile.CopyTo(fileStream);
@@ -138,7 +141,35 @@ namespace Pustok.Areas.Manage.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var wanted = _slider.Sliders.FirstOrDefault(x => x.Id == id);
 
+            return View(wanted);
+        }
+        [HttpPost]
+        public IActionResult Delete(Slider slider)
+        {
+            var sliderToDelete = _slider.Sliders.FirstOrDefault(x => x.Id == slider.Id);
+
+            if (sliderToDelete == null)
+            {
+                return NotFound();
+            }
+
+            string filePath = "C:\\Users\\Mehemmed\\Desktop\\MVC-Slider\\MVC One To Many Relation with EF Core\\wwwroot\\upload\\sliders\\" + sliderToDelete.Image;
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+
+            _slider.Sliders.Remove(sliderToDelete);
+            _slider.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
 
     }
