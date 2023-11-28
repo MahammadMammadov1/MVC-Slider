@@ -11,6 +11,8 @@ namespace MVC_One_To_Many_Relation_with_EF_Core.DAL
         }
 
         public DbSet<Slider> Sliders{ get; set; }
-
+        public DbSet<Tag> Tags{ get; set; }
+        public DbSet<Product> Products{ get; set; }
+        public DbSet<ProductTag> ProductTags { get; set; }
     }
 }
